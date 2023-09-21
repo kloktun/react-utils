@@ -73,7 +73,7 @@ export const useListLoad = <T, D>({ load, count, payload }: ListLoadProps<T, D>)
 
             prevList[index] = item;
 
-            return prevList;
+            return [...prevList];
         });
 
     }
@@ -143,6 +143,7 @@ export const useListLoad = <T, D>({ load, count, payload }: ListLoadProps<T, D>)
             if(props?.reset){
 
                 setList(data);
+                setOffset(data.length);
 
             } else {
 
@@ -151,10 +152,10 @@ export const useListLoad = <T, D>({ load, count, payload }: ListLoadProps<T, D>)
                     ...data
                 ]);
 
+                setOffset(list.length + data.length);
+
             }
 
-
-            setOffset(list.length + data.length);
             setHasMore(data.length == count);
             
         } catch (e) {
