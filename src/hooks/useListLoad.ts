@@ -28,7 +28,9 @@ export const useListLoad = <T, D>({ load, count, payload }: ListLoadProps<T, D>)
     const [error, setError] = useState<any>();
 
     const [hasMore, setHasMore] = useState(false);
-    const { loading, enableLoading, disableLoading } = useLoading();
+    const { loading, enableLoading, disableLoading } = useLoading({
+        initialValue: true
+    });
     const [offset, setOffset] = useState(0);
 
     const isEmpty = useMemo(
