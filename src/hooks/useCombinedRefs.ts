@@ -1,27 +1,24 @@
 import { useEffect, useRef } from "react";
 
-export const useCombinedRefs = <T>(...refs: any[]) => {
+export const useCombinedRefs = () => <T>(...refs: any[]) => {
 
     const targetRef = useRef<T>(null);
-  
-    useEffect(() => { 
-      refs.forEach(ref => { 
 
-        if (!ref) return 
-  
-        if (typeof ref === 'function' ) { 
-          
-            ref(targetRef.current);
+    refs.forEach(ref => { 
 
-        } else { 
+      if (!ref) return 
 
-          ref.current = targetRef.current;
+      if (typeof ref === 'function' ) { 
+        
+          ref(targetRef.current);
 
-        } 
-      });
+      } else { 
 
-    }, [refs]) 
-  
+        ref.current = targetRef.current;
+
+      } 
+    });
+
     return targetRef;
-    
+  
   }
