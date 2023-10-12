@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useBoolean } from "./useBoolean";
 
 interface Props {
     initialValue: boolean;
@@ -6,20 +6,12 @@ interface Props {
 
 export const useLoading = (props?: Props) => {
 
-    const [loading, setLoading] = useState(props?.initialValue);
-
-    const enableLoading = () => {
-        setLoading(true);
-    }
-
-    const disableLoading = () => {
-        setLoading(false);
-    }
+    const { value, enable, disable } = useBoolean(props?.initialValue);
 
     return {
-        loading,
-        enableLoading,
-        disableLoading
+        loading: value,
+        enableLoading: enable,
+        disableLoading: disable
     }
 
 }
