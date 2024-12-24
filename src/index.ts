@@ -7,3 +7,5 @@ export { useCombinedRefs } from './hooks/useCombinedRefs';
 export { useLoad } from './hooks/useLoad';
 export { useUnloadConfirm } from './hooks/useUnloadConfirm';
 export { useBoolean } from './hooks/useBoolean';
+export { useScreenSize } from './hooks/useScreenSize';
+export { useWindowScroll } from './hooks/useWindowScroll';
