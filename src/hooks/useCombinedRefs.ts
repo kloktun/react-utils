@@ -4,20 +4,24 @@ export const useCombinedRefs = () => <T>(...refs: any[]) => {
 
     const targetRef = useRef<T>(null);
 
-    refs.forEach(ref => { 
+    useEffect(() => { 
 
-      if (!ref) return 
+      refs.forEach(ref => { 
 
-      if (typeof ref === 'function' ) { 
-        
-          ref(targetRef.current);
+        if (!ref) return 
 
-      } else { 
+        if (typeof ref === 'function' ) { 
+          
+            ref(targetRef.current);
 
-        ref.current = targetRef.current;
+        } else { 
 
-      } 
-    });
+          ref.current = targetRef.current;
+
+        } 
+      });
+    }, [refs]) 
+
 
     return targetRef;
   
