@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLoading } from "./useLoading";
-import { isFresh, LoadCacheKey, useResolvedCache } from "../cache/LoadCache";
+import { getShownEntry, isFresh, LoadCacheKey, useResolvedCache } from "../cache/LoadCache";
 
 interface Props<T, D> {
 
@@ -22,7 +22,7 @@ export const useLoad = <T, D>({ load: loadData, payload, manual, cacheKey, stale
     const cache = useResolvedCache(cacheKey, payload, staleTime);
     const cacheId = cache?.key;
 
-    const [data, setData] = useState<T | undefined>(() => cache?.store.get(cache.key)?.value as T | undefined);
+    const [data, setData] = useState<T | undefined>(() => (cache ? getShownEntry(cache.store, cache.key)?.value as T | undefined : undefined));
     const [error, setError] = useState<any>();
 
     const { loading, enableLoading, disableLoading } = useLoading();
@@ -105,7 +105,7 @@ export const useLoad = <T, D>({ load: loadData, payload, manual, cacheKey, stale
 
         if (cache) {
 
-            const entry = cache.store.get(cache.key);
+            const entry = getShownEntry(cache.store, cache.key);
 
             if (entry) {
                 setData(entry.value as T);

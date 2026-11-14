@@ -46,9 +46,15 @@ const { data: website } = useLoad({
 ```tsx
 const { invalidate, clear } = useLoadCache();
 
-invalidate("websites");            // reload every mounted hook whose key starts with "websites"
+// After saving data on another screen — mark it outdated:
+await api.updateProduct(id, values);
+invalidate("products");            // every key starting with "products" (any payload)
 invalidate(["website", domain]);
 clear();
 ```
+
+Outdated data is **never shown**: on the next visit the screen loads it as without cache (no flash of old
+values). Hooks that are on screen at that moment reload in the background and keep what they show.
+Call `invalidate` explicitly where data is saved; an extra call only costs one honest load.
 
 Do not cache data that must never be shown stale: initial values of edit forms, payments.
