@@ -16,7 +16,7 @@ Caching is **opt-in** and works only when both are present:
 Without the provider the hooks behave exactly as in 0.0.x — even if `cacheKey` is passed.
 
 ```tsx
-// scope = everything that changes server responses for the same request.
+// scope = everything that changes server responses for the same request; null — cache off.
 // Use a stable user id (not an access token) and the language.
 <LoadCacheProvider scope={`${user?.id ?? "anon"}:${locale}`}>
 	<App />

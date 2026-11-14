@@ -92,7 +92,7 @@ export class LoadCacheStore {
 
 interface LoadCacheContextValue {
     store: LoadCacheStore;
-    scope: string;
+    scope: string | null;
     staleTime: number;
 }
 
@@ -102,7 +102,8 @@ interface LoadCacheProviderProps {
     // Everything that changes server responses for the same request: user id, language, etc.
     // Use a stable user id, not an access token — a refreshed token must not reset the cache.
     // When the scope changes (another account, logout, language) the cache is cleared.
-    scope: string;
+    // null — caching is off (e.g. the user is not known yet); the provider stays in the tree.
+    scope: string | null;
     // Default time (ms) during which cached data is considered fresh and is not reloaded on mount.
     // 0 — always reload in the background, but show cached data instantly.
     staleTime?: number;
@@ -149,7 +150,7 @@ export function useResolvedCache(cacheKey: LoadCacheKey | undefined, payload: un
 
     const context = useContext(LoadCacheContext);
 
-    if (!context || cacheKey === undefined) {
+    if (!context || context.scope === null || cacheKey === undefined) {
         return null;
     }
 
@@ -186,7 +187,7 @@ export const useLoadCache = () => {
         // Matches every hook whose cacheKey starts with the given parts:
         // invalidate("websites") or invalidate(["websites", websiteId])
         const invalidate = (cacheKey: LoadCacheKey) => {
-            if (!context) return;
+            if (!context || context.scope === null) return;
 
             const prefixParts = typeof cacheKey === "string" ? [cacheKey] : cacheKey;
             const prefix = serialize(prefixParts);
@@ -204,7 +205,7 @@ export const useLoadCache = () => {
         };
 
         return {
-            enabled: !!context,
+            enabled: !!context && context.scope !== null,
             invalidate,
             clear,
         };
