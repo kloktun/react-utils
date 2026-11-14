@@ -9,3 +9,5 @@ export { useUnloadConfirm } from './hooks/useUnloadConfirm';
 export { useBoolean } from './hooks/useBoolean';
 export { useScreenSize } from './hooks/useScreenSize';
 export { useWindowScroll } from './hooks/useWindowScroll';
+export { LoadCacheProvider, useLoadCache } from './cache/LoadCache';
+export type { LoadCacheKey } from './cache/LoadCache';
