@@ -169,6 +169,13 @@ export function useResolvedCache(cacheKey: LoadCacheKey | undefined, payload: un
 
 }
 
+// Entry that may be shown: data marked by invalidate() is never shown — the hook loads it honestly
+export function getShownEntry(store: LoadCacheStore, key: string) {
+    const entry = store.get(key);
+
+    return entry && !entry.stale ? entry : undefined;
+}
+
 export function isFresh(store: LoadCacheStore, key: string, staleTime: number) {
     const entry = store.get(key);
 
@@ -184,8 +191,10 @@ export const useLoadCache = () => {
 
     return useMemo(() => {
 
-        // Matches every hook whose cacheKey starts with the given parts:
-        // invalidate("websites") or invalidate(["websites", websiteId])
+        // Marks data outdated, e.g. after saving it on another screen. Matches every hook whose cacheKey
+        // starts with the given parts: invalidate("websites") or invalidate(["websites", websiteId]).
+        // Outdated data is never shown on a next visit — the screen loads it as without cache.
+        // Mounted hooks reload in the background, keeping what is on screen.
         const invalidate = (cacheKey: LoadCacheKey) => {
             if (!context || context.scope === null) return;
 

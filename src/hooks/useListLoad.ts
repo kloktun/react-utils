@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLoading } from "./useLoading";
-import { isFresh, LoadCacheKey, useResolvedCache } from "../cache/LoadCache";
+import { getShownEntry, isFresh, LoadCacheKey, useResolvedCache } from "../cache/LoadCache";
 
 interface OffsetCountProps {
 
@@ -41,7 +41,8 @@ export const useListLoad = <T, D>({ load, count, payload, cacheKey, staleTime }:
     const cache = useResolvedCache(cacheKey, payload, staleTime, count);
     const cacheId = cache?.key;
 
-    const readCache = () => cache?.store.get(cache.key)?.value as ListCacheValue<T> | undefined;
+    // Shown entry only: a list marked by invalidate() is loaded honestly
+    const readCache = () => (cache ? getShownEntry(cache.store, cache.key)?.value as ListCacheValue<T> | undefined : undefined);
 
     const [list, setList] = useState<T[]>(() => {
         const cached = readCache();
@@ -61,7 +62,7 @@ export const useListLoad = <T, D>({ load, count, payload, cacheKey, staleTime }:
     );
 
     // With a cached (even empty) list there is nothing to preload — only a background refresh
-    const hasCacheEntry = !!cache && !!cache.store.get(cache.key);
+    const hasCacheEntry = !!cache && !!getShownEntry(cache.store, cache.key);
 
     const preloading = useMemo(
         () => isEmpty && loading && !hasCacheEntry,
@@ -319,7 +320,8 @@ export const useListLoad = <T, D>({ load, count, payload, cacheKey, staleTime }:
         }
 
         return cache.store.subscribe(cache.key, () => {
-            const cached = readCache();
+            // The list is on screen: reload as many items as are shown (the entry is already marked stale)
+            const cached = cache.store.get(cache.key)?.value as ListCacheValue<T> | undefined;
             revalidateRef.current(Math.max(count, cached?.list.length ?? 0));
         });
 
