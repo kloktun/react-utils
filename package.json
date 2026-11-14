@@ -1,6 +1,6 @@
 {
   "name": "@kloktun/react-utils",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "",
   "source": "src/index.ts",
   "type": "module",
